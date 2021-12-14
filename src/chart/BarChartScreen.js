@@ -1,6 +1,6 @@
-import React,{useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from 'react-chartjs-2';
-import {getdata, getDataApi} from '../data/apiData';
+import { getdataDaily, getDataApi } from '../data/apiData';
 
 
 
@@ -12,57 +12,56 @@ const BarChartScreen = () => {
 
     const data = (canvas) => {
         const ctx = canvas.getContext("2d");
-        const gradient = ctx.createLinearGradient(0,90,100,0);
-        const gradient1 = ctx.createLinearGradient(0,90,100,0);
-        gradient.addColorStop(0,'#ff0c00');
-        gradient.addColorStop(0.5,'#f2716b');
-        gradient.addColorStop(1,'#fcaba7');
+        const gradient = ctx.createLinearGradient(0, 90, 100, 0);
+        const gradient1 = ctx.createLinearGradient(0, 90, 100, 0);
+        gradient.addColorStop(0, '#ff0c00');
+        gradient.addColorStop(0.5, '#f2716b');
+        gradient.addColorStop(1, '#fcaba7');
 
-        gradient1.addColorStop(0,'#6dfc8a');
-        gradient1.addColorStop(0.5,'#13eb3f');
-        gradient1.addColorStop(1,'#c5fad0');
+        gradient1.addColorStop(0, '#6dfc8a');
+        gradient1.addColorStop(0.5, '#13eb3f');
+        gradient1.addColorStop(1, '#c5fad0');
 
-        return{
-            labels : lablesData,
-            datasets : [
-                {
+        return {
+            labels: lablesData,
+            datasets: [{
                     fill: false,
                     label: 'Confirmed',
-                    data:confirmedData,
-                    backgroundColor:gradient1,
-                    borderColor:gradient1,
-                    borderWidth:5
+                    data: confirmedData,
+                    backgroundColor: gradient1,
+                    borderColor: gradient1,
+                    borderWidth: 5
                 },
                 {
                     fill: false,
                     label: 'Deaths',
                     data: deathsData,
-                    backgroundColor:gradient,
-                    borderColor:gradient,
-                    borderWidth:5
+                    backgroundColor: gradient,
+                    borderColor: gradient,
+                    borderWidth: 5
                 }
             ]
         }
     }
     const options = {
-        responsive : true,
-        tooltips:{
+        responsive: true,
+        tooltips: {
             mode: 'index',
             intersect: false
         },
-        hover:{
+        hover: {
             mode: 'nearest',
             intersect: true
         },
-        scales:{
+        scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero:true
+                    beginAtZero: true
                 }
             }]
         },
-    legend: {
-            display:true,
+        legend: {
+            display: true,
             position: 'bottom',
             labels: {
                 fontColor: 'rgba(242,38,19,1)'
@@ -71,39 +70,41 @@ const BarChartScreen = () => {
 
     }
 
-    const getChartData = async () => {
+    const getChartData = async() => {
         try {
             let labelsArray = [];
             let confirmedArray = [];
             let deathsArray = [];
-            
-            const data =  await getdata();
+
+            const data = await getdataDaily('09-28-2021');
             data.forEach(element => {
                 labelsArray.push(element.reportDate);
                 confirmedArray.push(element.confirmed.total);
                 deathsArray.push(element.deaths.total);
             });
 
-            console.log('data', data );
+            console.log('data', data);
 
             setLabelsData(labelsArray);
             setConfirmedData(confirmedArray);
             setdeathsData(deathsArray);
 
         } catch (error) {
-            
+
         }
     }
 
     useEffect(() => {
         getChartData();
         return () => {
-            
+
         }
     }, [])
 
-     return (
-        <Bar data={data} options={options} />
+    return ( <
+        Bar data = { data }
+        options = { options }
+        />
     )
 }
 
